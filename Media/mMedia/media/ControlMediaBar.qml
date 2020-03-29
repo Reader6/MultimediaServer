@@ -40,8 +40,6 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.right:  parent.right
         anchors.rightMargin: 5
-
-        onStop: __playButton.running = false
     }
 
     function retime(time){
@@ -53,7 +51,10 @@ Item {
         return qsTr(timeToStr(min) + ":" + timeToStr(sec))
     }
 
-/*Slide{//调节音量
-        stepSize: 0.01
-    }*/
+/*
+Slide{//调节音量
+    stepSize: 0.01
+}
+*/
+
 }
