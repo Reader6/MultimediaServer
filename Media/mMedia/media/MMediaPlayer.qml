@@ -46,10 +46,10 @@ Rectangle{
 
         function loadTsfile(curTs){
             for(var i=0; i<3 && curTs<tsLen ; i++){
-                curTs += 1
                 if(mediaSourse.loadTsFile(curTs) === 0) {
                     loadTs = curTs
                 }
+                curTs += 1
             }
         }
 
@@ -117,14 +117,11 @@ Rectangle{
                     !controlBar.voiceButton.running
         }
     }
-    Connections{//视频seek
+    Connections{//视频seek. error
         target: controlBar.progress
         onSeek:{
             var pos = index*1000
             var ind = mediaSourse.poslocation(pos)
-            if(ind === 6){
-                console.log("66666")
-            }
 
             if(mediaSourse.isTsFileOk(ind) === false){
                 player.loadTsfile(ind)
@@ -158,7 +155,7 @@ Rectangle{
     }
     Timer{
         id : loadTimer
-        interval: 2000
+        interval: 1000
         repeat: true
         onTriggered: {
 
@@ -172,7 +169,7 @@ Rectangle{
 
             if(curind > player.currentTs){
                 player.currentTs = curind
-                console.log("currentTs " + player.currentTs)
+                console.log("current -> Ts " + player.currentTs)
                 player.loadTsfile(curind)
                 console.log("loadTsfile")
             }
@@ -203,7 +200,7 @@ Rectangle{
     }
 
     onSourceChanged: {
-        console.log("onSourceChanged " + source)
+        console.log("onSourceChanged -> " + source)
         player.stop()
         loadTimer.stop()
         if(source !== ""){
