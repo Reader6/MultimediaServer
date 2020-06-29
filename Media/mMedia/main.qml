@@ -9,7 +9,7 @@ import "media"
 Window {
     visible: true
     width: 640
-    height: 600
+    height: 640
     title: qsTr("Hello World")
 
     MMediaPlayer{

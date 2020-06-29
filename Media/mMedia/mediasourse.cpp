@@ -1,12 +1,12 @@
-#include "mediasourse.h"
-#include "workthread.h"
-#include "curltool.h"
+﻿#include "mediasourse.h"
+
 
 #include <unistd.h>
 #include <QDebug>
 #include <QDir>
 
-const QString media_addr("http://127.0.0.1/");
+#include "filedownload.h"
+#include "downthread.h"
 
 MediaSourse::MediaSourse(QObject *parent)
     :QObject(parent),
@@ -25,14 +25,14 @@ bool MediaSourse::loadSourse(QString url)
     }
 
     sourse = url;
-    WorkThread work(media_addr + url + "/index.m3u8");
-    connect(&work,SIGNAL(finished()),&work,SLOT(deleteLater()));
-    work.start();
-    if(work.wait(5000) == false){//5秒
-        qDebug() << "加载m3u : " + url;
+    QString soursefile = url + "/index.m3u8";
+    if(!FileDownload::get_instance().downLoad(soursefile, true)){
+        qDebug() << "加载源文件"<<soursefile<<"失败";
         return false;
     }
-    file = new m3uFile(CurlDownload::rootDir+ QString(sourse+"/index.m3u8").toStdString() );
+
+    QString s = FileDownload::localaddr + soursefile;
+    file = new m3uFile(s.toStdString());
     alreadyTs = new QVector<bool>(file->length());
     len = alreadyTs->length();
     for (int i=0; i<len; i++) {
@@ -42,7 +42,7 @@ bool MediaSourse::loadSourse(QString url)
     return true;
 }
 
-int MediaSourse::loadTsFile(int index)
+int MediaSourse::loadTsFile(int index, bool b)
 {
     if(!available){
         qDebug() << "当前源不可用";
@@ -57,13 +57,12 @@ int MediaSourse::loadTsFile(int index)
         return 0;
     }
 
-    QString url = QString(media_addr + sourse + "/index%1.ts").arg(index);
-    WorkThread work(url);
-    work.start();
-    if(work.wait(30000) == false){//30秒
-        qDebug() << "加载超时 : " + url;
-        return -2;
+    QString url = QString(sourse + "/index%1.ts").arg(index);
+    if(!FileDownload::get_instance().downLoad(url, b)){
+        qDebug() << "加载文件"<<url<<"失败";
+        return 1;
     }
+
     (*alreadyTs)[index] = true;
     return 0;
 
@@ -75,13 +74,13 @@ int MediaSourse::getDuration(int index)
         qDebug() << "当前源不可用";
         return -1;
     }
-    //index [0, len)
     return static_cast<int>(file->getExtinfSum(index) * 1000);
 }
 
 QString MediaSourse::absDir()
 {
-    return QDir("./").absolutePath();
+    QDir dir = FileDownload::localaddr;
+    return dir.absolutePath();
 }
 
 void MediaSourse::clear()

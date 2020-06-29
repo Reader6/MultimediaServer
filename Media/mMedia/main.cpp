@@ -4,15 +4,18 @@
 
 #include "mediasourse.h"
 
+
+bool checkPermission();
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
-
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("mediaSourse", new MediaSourse);
+    MediaSourse *mediaSourse = new MediaSourse;
+    engine.rootContext()->setContextProperty("mediaSourse", mediaSourse);
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
@@ -20,3 +23,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+

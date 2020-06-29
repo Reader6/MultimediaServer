@@ -15,18 +15,17 @@ public:
     explicit MediaSourse(QObject *parent = nullptr);
 
     Q_INVOKABLE bool loadSourse(QString url);
-    Q_INVOKABLE int loadTsFile(int index);
+    Q_INVOKABLE int loadTsFile(int index, bool b = false);
     Q_INVOKABLE int poslocation(int postion);
 
     Q_INVOKABLE int getDuration(int index);
     Q_INVOKABLE QString absDir();
     Q_INVOKABLE void clear();
+    Q_INVOKABLE bool isTsFileOk(int i);
 
     int length() const;
 
     ~MediaSourse();
-private:
-    bool isTsFileOk(int i);
 private:
     bool available;
     QString sourse;
