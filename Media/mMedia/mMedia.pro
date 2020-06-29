@@ -13,11 +13,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        curltool.cpp \
+        downthread.cpp \
+        filedownload.cpp \
         m3ufile.cpp \
         main.cpp \
-        mediasourse.cpp \
-        workthread.cpp
+        mediasourse.cpp
+
+
 
 RESOURCES += qml.qrc
 
@@ -33,13 +35,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-
-LIBS += -lcurl
-
-
 HEADERS += \
     binaryindexedtree.hpp \
-    curltool.h \
+    downthread.h \
+    filedownload.h \
     m3ufile.h \
-    mediasourse.h \
-    workthread.h
+    mediasourse.h
